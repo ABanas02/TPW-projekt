@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Projekt
+namespace Projekt.Prezentacja.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -22,7 +22,6 @@ namespace Projekt
     {
         public MainWindow()
         {
-            InitializeComponent();
         }
     }
 }

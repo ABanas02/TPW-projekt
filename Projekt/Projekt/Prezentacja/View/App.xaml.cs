@@ -6,12 +6,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Projekt
+namespace Projekt.Prezentacja.View
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
+        [STAThread]
+        public static void Main()
+        {
+            var app = new App();
+            app.Run();
+        }
     }
 }
