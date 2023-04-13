@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="60438b74-28ef-4264-9412-22241c0a2f3f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClassLibrary1/ClassLibrary1/ClassLibrary1.sln" beforeDir="false" afterPath="$PROJECT_DIR$/ClassLibrary1/ClassLibrary1/ClassLibrary1.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClassLibrary1/ClassLibrary1/ClassLibrary1/Class1.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClassLibrary1/ClassLibrary1/ClassLibrary1/Class1.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClassLibrary1/ClassLibrary1/ClassLibrary1/ClassLibrary1.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/ClassLibrary1/ClassLibrary1/ClassLibrary1/ClassLibrary1.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClassLibrary1/ClassLibrary1/TestProject1/TestProject1.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/ClassLibrary1/ClassLibrary1/TestProject1/TestProject1.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="D:/maven/apache-maven-3.8.6" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="jdkForImporter" value="#JAVA_HOME" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2NYAK4COoJp5be9kyFKUZRO1nS3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/micha/Desktop/repo&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.importing&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="60438b74-28ef-4264-9412-22241c0a2f3f" name="Changes" comment="" />
+      <created>1679830580479</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1679830580479</updated>
+      <workItem from="1679830599889" duration="268000" />
+      <workItem from="1680191557817" duration="106000" />
+      <workItem from="1680191707775" duration="20000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
