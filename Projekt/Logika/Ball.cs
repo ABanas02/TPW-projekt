@@ -1,6 +1,9 @@
-﻿namespace Logika
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace Logika
 {
-    public class Ball
+    public class Ball : INotifyPropertyChanged
     {
         private int _x;
         private int _y;
@@ -19,37 +22,63 @@
         public int X
         {
             get { return _x; }
-            set { _x = value; }
+            set
+            {
+                _x = value;
+                OnPropertyChanged();
+            }
         }
         public int Vx
         {
             get { return _Vx; }
-            set { _Vx = value; }
+            set
+            {
+                _Vx = value;
+            }
         }
 
         public int Y
         {
             get { return _y; }
-            set { _y = value; }
+            set
+            {
+                _y = value;
+                OnPropertyChanged();
+            }
         }
 
         public int Vy
         {
             get { return _Vy; }
-            set { _Vy = value; }
+            set
+            {
+                _Vy = value;
+            }
         }
 
         public int Radius
         {
             get { return _radius; }
-            set { _radius = value; }
+            set
+            {
+                _radius = value;
+            }
         }
+        public int Diameter
+        {
+            get { return Radius * 2; }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public void Move()
         {
-            _x += _Vx;
-            _y += _Vy;
+            X += Vx;
+            Y += Vy;
         }
 
         public void CheckCollisionWithBoard(int boardWidth, int boardHeight)
