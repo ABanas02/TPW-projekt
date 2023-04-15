@@ -11,7 +11,7 @@ namespace LogikaTest
         public void TestCreateBall()
         {
             DaneAPI dane = DaneAPI.CreateApi();
-            LogikaAPI logika = LogikaAPI.CreateApi(dane, 1000, 1500);
+            LogikaAPI logika = LogikaAPI.CreateApi(1000, 1500);
             logika.CreateBall();
             Assert.AreEqual(logika.balls.Count, 1);
 
@@ -31,7 +31,7 @@ namespace LogikaTest
         {
             // Przygotowanie
             DaneAPI dane = DaneAPI.CreateApi();
-            LogikaAPI logika = LogikaAPI.CreateApi(dane, 1000, 1500);
+            LogikaAPI logika = LogikaAPI.CreateApi(1000, 1500);
             int boardWidth = 1000;
             int boardHeight = 1500;
 
