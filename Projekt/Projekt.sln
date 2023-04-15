@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogikaTest", "LogikaTest\Lo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{51E7A139-4CF0-4368-BAF5-B6BF4C0B54C9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{FC6B7AAA-8FD6-4BBF-B9C6-683F63F523D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{51E7A139-4CF0-4368-BAF5-B6BF4C0B54C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51E7A139-4CF0-4368-BAF5-B6BF4C0B54C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51E7A139-4CF0-4368-BAF5-B6BF4C0B54C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC6B7AAA-8FD6-4BBF-B9C6-683F63F523D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC6B7AAA-8FD6-4BBF-B9C6-683F63F523D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC6B7AAA-8FD6-4BBF-B9C6-683F63F523D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC6B7AAA-8FD6-4BBF-B9C6-683F63F523D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
