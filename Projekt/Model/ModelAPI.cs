@@ -8,9 +8,13 @@ namespace Model
     {
         private LogikaAPI _logikaAPI;
 
-        public ModelAPI(int boardWidth, int boardHeight)
+        //public ModelAPI(int boardWidth, int boardHeight)
+        //{
+        //    _logikaAPI = LogikaAPI.CreateApi(boardWidth, boardHeight);
+        //}
+        public ModelAPI(LogikaAPI logikaAPI)
         {
-            _logikaAPI = LogikaAPI.CreateApi(boardWidth, boardHeight);
+            _logikaAPI = logikaAPI;
         }
 
         public void Start()
@@ -36,10 +40,5 @@ namespace Model
             return balls;
         }
 
-        public void SetBoardSize(int width, int height)
-        {
-            _logikaAPI.boardWidth = width;
-            _logikaAPI.boardHeight = height;
-        }
     }
 }

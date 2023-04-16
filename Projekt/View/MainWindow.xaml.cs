@@ -14,6 +14,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ViewModel;
 using Model;
+using Logika;
+using Logika.API;
+
 namespace View
 {
     /// <summary>
@@ -23,8 +26,10 @@ namespace View
     {
         public MainWindow()
         {
+            LogikaAPI logika;
+            logika = LogikaAPI.CreateApi(390, 190);
             InitializeComponent();
-            DataContext = new ViewModelAPI(new ModelAPI(390, 190));
+            DataContext = new ViewModelAPI(new ModelAPI(logika));
         }
     }
 }

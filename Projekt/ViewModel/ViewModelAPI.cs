@@ -46,7 +46,7 @@ namespace ViewModel
         }
 
         public void Stop()
-        {
+        {   
             _model.Stop();
         }
 
