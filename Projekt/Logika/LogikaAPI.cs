@@ -30,9 +30,17 @@ namespace Logika.API
         }
 
         public abstract void CreateBall();
+        public abstract void OnTimerTick(object sender, ElapsedEventArgs e);
+        public abstract void Start();
+        public abstract void Stop();
+       
+    }
 
+    internal class BallAPIBase : LogikaAPI
+    {
+        public BallAPIBase(int boardWidth, int boardHeight) : base(boardWidth, boardHeight) { }
 
-        public void OnTimerTick(object sender, ElapsedEventArgs e)
+        public override void OnTimerTick(object sender, ElapsedEventArgs e)
         {
             foreach (var ball in balls)
             {
@@ -41,30 +49,33 @@ namespace Logika.API
             }
         }
 
-        public void Start()
-        {
-            timer.Start();
-        }
-
-        public void Stop()
-        {
-            timer.Stop();
-        }
-    }
-
-    internal class BallAPIBase : LogikaAPI
-    {
-        public BallAPIBase(int boardWidth, int boardHeight) : base(boardWidth, boardHeight) { }
-
         public override void CreateBall()
         {
             int x = random.Next(0, boardWidth);
             int y = random.Next(0, boardHeight);
-            int Vx = random.Next(-2, 3);
-            int Vy = random.Next(-2, 3);
+
+            int Vx = 0;
+            int Vy = 0;
+
+            while (Vx == 0 || Vy == 0)
+            {
+                Vx = random.Next(-2, 2);
+                Vy = random.Next(-2, 2);
+            }
+          
             int radius = 5;
             balls.Add(new Ball(x, y, Vx, Vy, radius));
            
+        }
+
+        public override void Start()
+        {
+            timer.Start();
+        }
+
+        public override void Stop()
+        {
+            timer.Stop();
         }
     }
 }
