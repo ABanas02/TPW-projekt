@@ -56,10 +56,6 @@ namespace ViewModel
             Balls = GetBalls();
         }
 
-        public void SetBoardSize(int width, int height)
-        {
-            _model.SetBoardSize(width, height);
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
