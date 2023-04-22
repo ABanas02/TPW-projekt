@@ -13,9 +13,9 @@ namespace Logika.API
         public int boardHeight;
         public Random random;
 
-        public static LogikaAPI CreateApi(int boardWidth, int boardHeight)
+        public static LogikaAPI CreateApi()
         {
-            return new BallAPIBase(boardWidth, boardHeight);
+            return new BallAPIBase(390,190);
         }
 
         public abstract void CreateBall();
@@ -35,7 +35,7 @@ namespace Logika.API
             balls = new List<Ball>();
             random = new Random();
             daneAPI = DaneAPI.CreateApi();
-            timer = new System.Timers.Timer(1000 / 60); // 60 FPS
+            timer = new System.Timers.Timer(1000 / 60);
             timer.Elapsed += OnTimerTick;
         }
 
