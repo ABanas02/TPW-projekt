@@ -13,7 +13,7 @@ namespace LogikaTest
             logika.CreateBall();
             Assert.AreEqual(logika.balls.Count, 1);
 
-            Ball createdBall = logika.balls[0];
+            BallAPI createdBall = logika.balls[0];
 
 
             Assert.IsTrue(createdBall.X >= 0 && createdBall.X < 1000);
@@ -32,7 +32,7 @@ namespace LogikaTest
             int boardWidth = 1000;
             int boardHeight = 1500;
 
-            Ball ball = new Ball(0, 0, 5, 5, 5);
+            BallAPI ball =  BallAPI.CreateAPI(0, 0, 5, 5, 5);
 
             logika.balls.Add(ball);
 
