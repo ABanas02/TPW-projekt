@@ -16,7 +16,7 @@ namespace Logika.API
 
         public static LogikaAPI CreateApi()
         {
-            return new BallAPIBase(390,190);
+            return new BallAPIBase(390,190, DaneAPI.CreateApi());
         }
 
         public abstract void CreateBall();
@@ -29,7 +29,7 @@ namespace Logika.API
     internal class BallAPIBase : LogikaAPI
     {
         private DaneAPI daneAPI;
-        public BallAPIBase(int boardWidth, int boardHeight) 
+        public BallAPIBase(int boardWidth, int boardHeight, DaneAPI daneAPI) 
         {
             this.boardWidth = boardWidth;
             this.boardHeight = boardHeight;

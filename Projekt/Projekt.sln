@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\View
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "View", "View\View.csproj", "{0CD28447-516F-439F-A25D-D24E24556EF7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DaneTest", "DaneTest\DaneTest.csproj", "{2B401FD1-B4BE-4781-9286-FB868B38022D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{0CD28447-516F-439F-A25D-D24E24556EF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CD28447-516F-439F-A25D-D24E24556EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CD28447-516F-439F-A25D-D24E24556EF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B401FD1-B4BE-4781-9286-FB868B38022D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B401FD1-B4BE-4781-9286-FB868B38022D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B401FD1-B4BE-4781-9286-FB868B38022D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B401FD1-B4BE-4781-9286-FB868B38022D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
