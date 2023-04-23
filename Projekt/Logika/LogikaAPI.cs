@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Timers;
 using Dane;
+using Logika;
 
 namespace Logika.API
 {
     public abstract class LogikaAPI
     {
-        public List<Ball> balls;
+        public List<BallAPI> balls;
         public System.Timers.Timer timer;
         public int boardWidth;
         public int boardHeight;
@@ -32,7 +33,7 @@ namespace Logika.API
         {
             this.boardWidth = boardWidth;
             this.boardHeight = boardHeight;
-            balls = new List<Ball>();
+            balls = new List<BallAPI>();
             random = new Random();
             daneAPI = DaneAPI.CreateApi();
             timer = new System.Timers.Timer(1000 / 60);
@@ -56,14 +57,24 @@ namespace Logika.API
             int Vx = 0;
             int Vy = 0;
 
-            while (Vx == 0 || Vy == 0)
+            
+            Vx = random.Next(-2, 3);
+
+            if (Vx != 0)
             {
-                Vx = random.Next(-2, 2);
-                Vy = random.Next(-2, 2);
+                Vy = random.Next(-2, 3);
+            
             }
-          
+            else
+            {
+                while (Vy == 0)
+                {
+                    Vy = random.Next(-2, 3);
+                }
+            }
+
             int radius = 5;
-            balls.Add(new Ball(x, y, Vx, Vy, radius));
+            balls.Add(BallAPI.CreateAPI(x, y, Vx, Vy, radius));
            
         }
 

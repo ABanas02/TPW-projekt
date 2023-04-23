@@ -2,8 +2,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Logika;
-using Logika.API;
 using Model;
 
 namespace ViewModel
@@ -11,19 +9,19 @@ namespace ViewModel
     public abstract class ViewModelAPI : INotifyPropertyChanged
     {
         //protected ModelAPI _model;
-        private ObservableCollection<Ball> _balls;
+        private ObservableCollection<object> _objects;
 
         public static ViewModelAPI CreateViewModelAPI()
         {
             return new ViewModelAPIBase();
         }
 
-        public ObservableCollection<Ball> Balls
+        public ObservableCollection<object> Objects
         {
-            get => _balls;
+            get => _objects;
             set
             {
-                _balls = value;
+                _objects = value;
                 OnPropertyChanged();
             }
         }
@@ -31,7 +29,7 @@ namespace ViewModel
         public abstract void Start();
         public abstract void Stop();
         public abstract void CreateBall();
-        public abstract ObservableCollection<Ball> GetBalls();
+        public abstract ObservableCollection<object> GetObjects();
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -48,11 +46,10 @@ namespace ViewModel
             public ViewModelAPIBase()
             {
                 _model = ModelAPI.CreateApi();
-                //_model = model;
                 StartCommand = new RelayCommand(Start);
                 StopCommand = new RelayCommand(Stop);
                 CreateBallCommand = new RelayCommand(CreateBall);
-                Balls = GetBalls();
+                Objects = GetObjects();
             }
 
             public override void Start()
@@ -68,12 +65,12 @@ namespace ViewModel
             public override void CreateBall()
             {
                 _model.CreateBall();
-                Balls = GetBalls();
+                Objects = GetObjects();
             }
 
-            public override ObservableCollection<Ball> GetBalls()
+            public override ObservableCollection<object> GetObjects()
             {
-                return _model.GetBalls();
+                return _model.GetObjects();
             }
         }
     }
