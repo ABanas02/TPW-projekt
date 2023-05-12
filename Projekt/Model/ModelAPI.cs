@@ -26,7 +26,7 @@ namespace Model
             private LogikaAPI _logikaAPI;
             public ModelAPIBase(int boardWidth, int boardHeight)
             {
-                _logikaAPI = LogikaAPI.CreateApi();
+                _logikaAPI = LogikaAPI.CreateApi(null);
             }
 
             public override void Start()

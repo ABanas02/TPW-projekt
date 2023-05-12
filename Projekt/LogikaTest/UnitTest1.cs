@@ -1,3 +1,4 @@
+using Dane;
 using Logika;
 using Logika.API;
 
@@ -6,10 +7,17 @@ namespace LogikaTest
     [TestClass]
     public class APITest
     {
+        public class TestDane : DaneAPI
+        {
+            public TestDane() { }
+        }
+
+        private LogikaAPI logika = LogikaAPI.CreateApi(new TestDane());
+
         [TestMethod]
         public void TestCreateBall()
         {
-            LogikaAPI logika = LogikaAPI.CreateApi();
+            
             logika.CreateBall();
             Assert.AreEqual(logika.balls.Count, 1);
 
@@ -28,7 +36,6 @@ namespace LogikaTest
         public void TestBallMoveAndBallOutOfBounds()
         {
             // Przygotowanie
-            LogikaAPI logika = LogikaAPI.CreateApi();
             int boardWidth = 1000;
             int boardHeight = 1500;
 

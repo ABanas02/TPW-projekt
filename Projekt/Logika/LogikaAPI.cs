@@ -14,9 +14,16 @@ namespace Logika.API
         public int boardHeight;
         public Random random;
 
-        public static LogikaAPI CreateApi()
+        public static LogikaAPI CreateApi(DaneAPI daneAPI)
         {
-            return new BallAPIBase(390,190, DaneAPI.CreateApi());
+            if (daneAPI == null)
+            {
+                return new BallAPIBase(390, 190, DaneAPI.CreateApi());
+            }
+            else
+            {
+                return new BallAPIBase(390, 190, daneAPI);
+            }
         }
 
         public abstract void CreateBall();
@@ -28,14 +35,14 @@ namespace Logika.API
 
     internal class BallAPIBase : LogikaAPI
     {
-        private DaneAPI daneAPI;
+        private DaneAPI _daneAPI;
         public BallAPIBase(int boardWidth, int boardHeight, DaneAPI daneAPI) 
         {
+            _daneAPI = daneAPI;
             this.boardWidth = boardWidth;
             this.boardHeight = boardHeight;
             balls = new List<BallAPI>();
             random = new Random();
-            daneAPI = DaneAPI.CreateApi();
             timer = new System.Timers.Timer(1000 / 60);
             timer.Elapsed += OnTimerTick;
         }
