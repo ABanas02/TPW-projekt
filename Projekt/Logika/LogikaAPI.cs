@@ -5,17 +5,21 @@ namespace Logika.API
 {
     public abstract class LogikaAPI
     {
-        public List<BallAPI> balls;
-        public System.Timers.Timer timer;
-        public int boardWidth;
-        public int boardHeight;
-        public Random random;
-
-        public static LogikaAPI CreateApi()
+        public static LogikaAPI CreateApi(DaneAPI daneAPI)
         {
-            return new BallAPIBase(390,190, DaneAPI.CreateApi());
+            if (daneAPI == null)
+            {
+                return new BallAPIBase(DaneAPI.CreateApi(390, 190));
+            }
+            else
+            {
+                return new BallAPIBase(daneAPI);
+            }
         }
-
+        public List<BallAPI> balls;
+        public Random random;
+        public abstract void CheckCollisionsBetweenBalls();
+        public abstract void CheckCollisionWithBoard();
         public abstract void CreateBall();
         public abstract void StartMovingBalls();
         public abstract void MoveBalls();
@@ -23,16 +27,12 @@ namespace Logika.API
 
     internal class BallAPIBase : LogikaAPI
     {
-        private DaneAPI daneAPI;
-        public BallAPIBase(int boardWidth, int boardHeight, DaneAPI daneAPI) 
+        private DaneAPI _daneAPI;
+        public BallAPIBase(DaneAPI daneAPI)
         {
-            this.boardWidth = boardWidth;
-            this.boardHeight = boardHeight;
+            _daneAPI = daneAPI;
             balls = new List<BallAPI>();
             random = new Random();
-            daneAPI = DaneAPI.CreateApi();
-            timer = new System.Timers.Timer(1000 / 60);
-            timer.Elapsed += OnTimerTick;
         }
         public override void CreateBall()
         {
