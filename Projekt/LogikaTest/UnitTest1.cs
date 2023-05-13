@@ -17,7 +17,7 @@ namespace LogikaTest
         [TestMethod]
         public void TestCreateBall()
         {
-
+            LogikaAPI logika = LogikaAPI.CreateApi();
             logika.CreateBall();
             Assert.AreEqual(logika.balls.Count, 1);
 

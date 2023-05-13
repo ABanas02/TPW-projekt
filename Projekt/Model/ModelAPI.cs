@@ -27,7 +27,17 @@ namespace Model
         internal class ModelAPIBase : ModelAPI
         {
             private LogikaAPI _logikaAPI;
-            public ModelAPIBase(LogikaAPI logikaAPI)
+            public ModelAPIBase(int boardWidth, int boardHeight)
+            {
+                _logikaAPI = LogikaAPI.CreateApi();
+            }
+
+            public override void Start()
+            {
+                _logikaAPI.Start();
+            }
+
+            public override void Stop()
             {
                 _logikaAPI = logikaAPI;  
             }
