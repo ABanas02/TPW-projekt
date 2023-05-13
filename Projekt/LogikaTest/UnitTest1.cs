@@ -1,3 +1,4 @@
+using Dane;
 using Logika;
 using Logika.API;
 
@@ -6,10 +7,17 @@ namespace LogikaTest
     [TestClass]
     public class APITest
     {
+        public class TestDane : DaneAPI
+        {
+            public TestDane() { }
+        }
+
+        private LogikaAPI logika = LogikaAPI.CreateApi(new TestDane());
+
         [TestMethod]
         public void TestCreateBall()
         {
-            LogikaAPI logika = LogikaAPI.CreateApi();
+
             logika.CreateBall();
             Assert.AreEqual(logika.balls.Count, 1);
 
@@ -28,11 +36,10 @@ namespace LogikaTest
         public void TestBallMoveAndBallOutOfBounds()
         {
             // Przygotowanie
-            LogikaAPI logika = LogikaAPI.CreateApi();
             int boardWidth = 1000;
             int boardHeight = 1500;
 
-            BallAPI ball =  BallAPI.CreateAPI(0, 0, 5, 5, 5);
+            BallAPI ball = BallAPI.CreateAPI(0, 0, 5, 5, 5);
 
             logika.balls.Add(ball);
 
@@ -71,7 +78,7 @@ namespace LogikaTest
             ball.Vx = 5;
             ball.Vy = 5;
             ball.Move();
-            ball.X = boardWidth +ball.Radius;
+            ball.X = boardWidth + ball.Radius;
             ball.CheckCollisionWithBoard(boardWidth, boardHeight);
 
             Assert.IsTrue(ball.Vx == -5 && ball.Vy == 5);

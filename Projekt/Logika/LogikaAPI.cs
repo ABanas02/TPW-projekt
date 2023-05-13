@@ -1,91 +1,124 @@
-using System;
-using System.Collections.Generic;
-using System.Timers;
 using Dane;
-using Logika;
+using System.Timers;
 
 namespace Logika.API
 {
     public abstract class LogikaAPI
     {
-        public List<BallAPI> balls;
-        public System.Timers.Timer timer;
-        public int boardWidth;
-        public int boardHeight;
-        public Random random;
-
-        public static LogikaAPI CreateApi()
+        public static LogikaAPI CreateApi(DaneAPI daneAPI)
         {
-            return new BallAPIBase(390,190, DaneAPI.CreateApi());
+            if (daneAPI == null)
+            {
+                return new BallAPIBase(DaneAPI.CreateApi(390,190));
+            }
+            else
+            {
+                return new BallAPIBase(daneAPI);
+            }
         }
-
+        public List<BallAPI> balls;
+        public Random random;
+        public abstract void CheckCollisionsBetweenBalls();
+        public abstract void CheckCollisionWithBoard();
         public abstract void CreateBall();
-        public abstract void OnTimerTick(object sender, ElapsedEventArgs e);
-        public abstract void Start();
-        public abstract void Stop();
-       
+        public abstract void StartMovingBalls();
+        public abstract void MoveBalls();
     }
 
     internal class BallAPIBase : LogikaAPI
     {
-        private DaneAPI daneAPI;
-        public BallAPIBase(int boardWidth, int boardHeight, DaneAPI daneAPI) 
+        private DaneAPI _daneAPI;
+        public BallAPIBase(DaneAPI daneAPI)
         {
-            this.boardWidth = boardWidth;
-            this.boardHeight = boardHeight;
+            _daneAPI = daneAPI;
             balls = new List<BallAPI>();
             random = new Random();
-            daneAPI = DaneAPI.CreateApi();
-            timer = new System.Timers.Timer(1000 / 60);
-            timer.Elapsed += OnTimerTick;
         }
+        public override void CreateBall()
+        {
+            balls.Add(_daneAPI.Boundary.CreateBall());
+            var ball = balls[balls.Count - 1];
+            if (balls.Count == 1)
+            {
+                StartMovingBalls();
+            }
+        }
+        public override void StartMovingBalls()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    MoveBalls();
+                    CheckCollisionWithBoard();
+                    CheckCollisionsBetweenBalls();
 
-        public override void OnTimerTick(object sender, ElapsedEventArgs e)
+                    Thread.Sleep(1000 / 60);
+                }
+            });
+        }
+        public override void MoveBalls()
         {
             foreach (var ball in balls)
             {
-                ball.Move();
-                ball.CheckCollisionWithBoard(boardWidth, boardHeight);
+                ball.X += ball.Vx;
+                ball.Y += ball.Vy;
             }
         }
-
-        public override void CreateBall()
+        public override void CheckCollisionWithBoard()
         {
-            int x = random.Next(11, boardWidth - 11);
-            int y = random.Next(11, boardHeight - 11);
-
-            int Vx = 0;
-            int Vy = 0;
-
-            
-            Vx = random.Next(-2, 3);
-
-            if (Vx != 0)
+            foreach (var ball in balls)
             {
-                Vy = random.Next(-2, 3);
-            
-            }
-            else
-            {
-                while (Vy == 0)
+                if (ball.X - ball.Radius < 0)
                 {
-                    Vy = random.Next(-2, 3);
+                    ball.Vx = Math.Abs(ball.Vx); // Make sure the ball moves to the right
+                    ball.X = ball.Radius; // Make sure the ball is within the board
+                }
+                else if (ball.X + ball.Radius > _daneAPI.Boundary.Width)
+                {
+                    ball.Vx = -Math.Abs(ball.Vx); // Make sure the ball moves to the left
+                    ball.X = _daneAPI.Boundary.Width - ball.Radius; // Make sure the ball is within the board
+                }
+
+                if (ball.Y - ball.Radius < 0)
+                {
+                    ball.Vy = Math.Abs(ball.Vy); // Make sure the ball moves downwards
+                    ball.Y = ball.Radius; // Make sure the ball is within the board
+                }
+                else if (ball.Y + ball.Radius > _daneAPI.Boundary.Height)
+                {
+                    ball.Vy = -Math.Abs(ball.Vy); // Make sure the ball moves upwards
+                    ball.Y = _daneAPI.Boundary.Height - ball.Radius; // Make sure the ball is within the board
                 }
             }
-
-            int radius = 5;
-            balls.Add(BallAPI.CreateAPI(x, y, Vx, Vy, radius));
-           
         }
 
-        public override void Start()
+        public override void CheckCollisionsBetweenBalls()
         {
-            timer.Start();
-        }
+            for (int i = 0; i < balls.Count; i++)
+            {
+                for (int j = i + 1; j < balls.Count; j++)
+                {
+                    BallAPI ball1 = balls[i];
+                    BallAPI ball2 = balls[j];
 
-        public override void Stop()
-        {
-            timer.Stop();
+                    int distance = (int)Math.Sqrt(Math.Pow(ball1.X - ball2.X, 2) + Math.Pow(ball1.Y - ball2.Y, 2));
+
+                    if (distance <= ball1.Radius / 2 + ball2.Radius / 2)
+                    {
+                        // collision detected
+                        int v1x = ball1.Vx;
+                        int v1y = ball1.Vy;
+                        int v2x = ball2.Vx;
+                        int v2y = ball2.Vy;
+
+                        ball1.Vx = (v1x * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2x) / (ball1.Mass + ball2.Mass);
+                        ball1.Vy = (v1y * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2y) / (ball1.Mass + ball2.Mass);
+                        ball2.Vx = (v2x * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1x) / (ball1.Mass + ball2.Mass);
+                        ball2.Vy = (v2y * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1y) / (ball1.Mass + ball2.Mass);
+                    }
+                }
+            }
         }
     }
 }

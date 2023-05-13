@@ -1,24 +1,24 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Logika
+namespace Dane
 {
     public abstract class BallAPI
     {
-        public static BallAPI CreateAPI(int x, int y, int Vx, int Vy, int radius)
+        public static BallAPI CreateAPI(int x, int y, int Vx, int Vy, int radius, int mass, Boundary boundary)
         {
-            return new BallBase(x, y, Vx, Vy, radius);
+            return new BallBase(x, y, Vx, Vy, radius, mass, boundary);
         }
-
+        
+        public abstract int Mass { get; set; }
         public abstract int X { get; set; }
         public abstract int Y { get; set; }
         public abstract int Vx { get; set; }
         public abstract int Vy { get; set; }
         public abstract int Radius { get; set; }
         public abstract int Diameter { get; }
+        public Boundary Boundary { get; private set; }
 
-        public abstract void Move();
-        public abstract void CheckCollisionWithBoard(int boardWidth, int boardHeight);
         internal class BallBase : BallAPI, INotifyPropertyChanged
         {
             private int _x;
@@ -26,15 +26,19 @@ namespace Logika
             private int _Vx;
             private int _Vy;
             private int _radius;
+            private int _mass;
 
-            public BallBase(int _x, int _y, int _Vx, int _Vy, int _radius)
+            public BallBase(int _x, int _y, int _Vx, int _Vy, int _radius, int _mass, Boundary boundary)
             {
                 this._x = _x;
                 this._y = _y;
                 this._Vx = _Vx;
                 this._Vy = _Vy;
                 this._radius = _radius;
+                this._mass = _mass;
+                this.Boundary = boundary;
             }
+
             public override int X
             {
                 get { return _x; }
@@ -84,6 +88,17 @@ namespace Logika
             {
                 get { return Radius * 2; }
             }
+
+            public override int Mass
+            {
+                get { return _mass; }
+                set
+                {
+                    _mass = value;
+                    OnPropertyChanged();
+                }
+            }
+
             public event PropertyChangedEventHandler PropertyChanged;
 
             protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -91,24 +106,6 @@ namespace Logika
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
 
-            public override void Move()
-            {
-                X += Vx;
-                Y += Vy;
-            }
-
-            public override void CheckCollisionWithBoard(int boardWidth, int boardHeight)
-            {
-                if (X - Radius < 0 || X + Radius > boardWidth)
-                {
-                    Vx = -Vx;
-                }
-
-                if (Y - Radius < 0 || Y + Radius > boardHeight)
-                {
-                    Vy = -Vy;
-                }
-            }
         }
     }
 }

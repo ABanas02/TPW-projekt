@@ -1,42 +1,35 @@
-﻿using System.Collections.ObjectModel;
-using Logika;
+﻿using Logika;
 using Logika.API;
+using System.Collections.ObjectModel;
 
 namespace Model
 {
     public abstract class ModelAPI
     {
-        
-        public static ModelAPI CreateApi()
+
+        public static ModelAPI CreateApi(LogikaAPI logikaAPI)
         {
-            return new ModelAPIBase(390, 190);
+            if (logikaAPI == null)
+            {
+                return new ModelAPIBase(LogikaAPI.CreateApi(null));
+            }
+            else
+            {
+                return new ModelAPIBase(logikaAPI);
+            }
+            
         }
-
-        public abstract void Start();
-
-        public abstract void Stop();
-
 
         public abstract void CreateBall();
 
         public abstract ObservableCollection<object> GetObjects();
-        
-        internal class ModelAPIBase: ModelAPI
+
+        internal class ModelAPIBase : ModelAPI
         {
             private LogikaAPI _logikaAPI;
-            public ModelAPIBase(int boardWidth, int boardHeight)
+            public ModelAPIBase(LogikaAPI logikaAPI)
             {
-                _logikaAPI = LogikaAPI.CreateApi();
-            }
-
-            public override void Start()
-            {
-                _logikaAPI.Start();
-            }
-
-            public override void Stop()
-            {
-                _logikaAPI.Stop();
+                _logikaAPI = logikaAPI;  
             }
 
             public override void CreateBall()
@@ -47,7 +40,7 @@ namespace Model
             public override ObservableCollection<object> GetObjects()
             {
                 ObservableCollection<object> objects = new ObservableCollection<object>();
-                foreach (BallAPI ball in _logikaAPI.balls)
+                foreach (var ball in _logikaAPI.balls)
                     objects.Add(ball);
                 return objects;
             }

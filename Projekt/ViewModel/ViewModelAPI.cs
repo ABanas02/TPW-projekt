@@ -1,8 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using Model;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Model;
 
 namespace ViewModel
 {
@@ -25,9 +25,6 @@ namespace ViewModel
                 OnPropertyChanged();
             }
         }
-
-        public abstract void Start();
-        public abstract void Stop();
         public abstract void CreateBall();
         public abstract ObservableCollection<object> GetObjects();
 
@@ -45,21 +42,11 @@ namespace ViewModel
             private ModelAPI _model;
             public ViewModelAPIBase()
             {
-                _model = ModelAPI.CreateApi();
-                StartCommand = new RelayCommand(Start);
-                StopCommand = new RelayCommand(Stop);
+                _model = ModelAPI.CreateApi(null);
+                //StartCommand = new RelayCommand(Start);
+                //StopCommand = new RelayCommand(Stop);
                 CreateBallCommand = new RelayCommand(CreateBall);
                 Objects = GetObjects();
-            }
-
-            public override void Start()
-            {
-                _model.Start();
-            }
-
-            public override void Stop()
-            {
-                _model.Stop();
             }
 
             public override void CreateBall()

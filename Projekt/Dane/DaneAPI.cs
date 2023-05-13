@@ -1,17 +1,20 @@
-﻿using System;
-
-namespace Dane
+﻿namespace Dane
 {
     public abstract class DaneAPI
     {
-        public static DaneAPI CreateApi()
+        public Boundary Boundary { get; protected set; }
+
+        public static DaneAPI CreateApi(int width, int height)
         {
-            return new DaneAPIBase();
+            return new DaneAPIBase(width, height);
         }
     }
 
     internal class DaneAPIBase : DaneAPI
     {
-
+        public DaneAPIBase(int width, int height)
+        {
+            Boundary = new Boundary(width, height);
+        }
     }
 }
