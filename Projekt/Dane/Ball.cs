@@ -1,69 +1,78 @@
 ﻿using System.ComponentModel;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace Dane
 {
     public abstract class BallAPI
     {
-        public static BallAPI CreateAPI(int x, int y, int Vx, int Vy, int radius, int mass, Boundary boundary)
+        public static BallAPI CreateAPI(Vector2 position, int Vx, int Vy, int radius, int mass, Boundary boundary)
         {
-            return new BallBase(x, y, Vx, Vy, radius, mass, boundary);
+            return new BallBase(position, Vx, Vy, radius, mass, boundary);
         }
-        
+        public abstract Vector2 Position { get; }
         public abstract int Mass { get; set; }
-        public abstract int X { get; set; }
-        public abstract int Y { get; set; }
+        public abstract int X { get; }
+        public abstract int Y { get; }
         public abstract int Vx { get; set; }
         public abstract int Vy { get; set; }
         public abstract int Radius { get; set; }
         public abstract int Diameter { get; }
         public Boundary Boundary { get; private set; }
+        public abstract void subscribeToPropertyChanged(PropertyChangedEventHandler handler);
 
         internal class BallBase : BallAPI, INotifyPropertyChanged
         {
-            private int _x;
-            private int _y;
+            private Vector2 _position;
             private int _Vx;
             private int _Vy;
             private int _radius;
             private int _mass;
 
-            public BallBase(int _x, int _y, int _Vx, int _Vy, int _radius, int _mass, Boundary boundary)
+            public BallBase(Vector2 position, int _Vx, int _Vy, int _radius, int _mass, Boundary boundary)
             {
-                this._x = _x;
-                this._y = _y;
+                this._position = position;
                 this._Vx = _Vx;
                 this._Vy = _Vy;
                 this._radius = _radius;
                 this._mass = _mass;
                 this.Boundary = boundary;
+                Task.Run(() => Move());
             }
-
-            public override int X
+            private async Task Move()
             {
-                get { return _x; }
-                set
+                while (true)
                 {
-                    _x = value;
-                    OnPropertyChanged();
+                    int newX = (int)_position.X + _Vx;
+                    int newY = (int)_position.Y + _Vy;
+                    Vector2 newPosition = new Vector2(newX, newY);
+                    setPosition(newPosition);
+
+                    double velocity = Math.Sqrt(_Vx * _Vx + _Vy * _Vy);
+                    await Task.Delay(TimeSpan.FromMilliseconds(2 * velocity));
                 }
             }
+            public override Vector2 Position
+            {
+                get { return _position; }
+            }
+
+            private void setPosition(Vector2 newPosition)
+            {
+                _position.X = newPosition.X;
+                _position.Y = newPosition.Y;
+                OnPropertyChanged(nameof(Position.X));
+                OnPropertyChanged(nameof(Position.Y));
+            }
+            public override int X { get { return (int)_position.X; } }
+            public override int Y { get { return (int)_position.Y; } }
+
             public override int Vx
             {
                 get { return _Vx; }
                 set
                 {
                     _Vx = value;
-                }
-            }
-
-            public override int Y
-            {
-                get { return _y; }
-                set
-                {
-                    _y = value;
-                    OnPropertyChanged();
                 }
             }
 
@@ -95,11 +104,14 @@ namespace Dane
                 set
                 {
                     _mass = value;
-                    OnPropertyChanged();
                 }
             }
 
             public event PropertyChangedEventHandler PropertyChanged;
+            public override void subscribeToPropertyChanged(PropertyChangedEventHandler handler)
+            {
+                PropertyChanged += handler;
+            }
 
             protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
             {

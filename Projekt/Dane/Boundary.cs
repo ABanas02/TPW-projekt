@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,14 +24,15 @@ namespace Dane
         {
             int x = random.Next(40, Width - 40);
             int y = random.Next(40, Height - 40);
-
+            Vector2 position = new Vector2((int)x, (int)y);
+            Debug.WriteLine(position);
             int Vx = random.Next(1, 3);
             int Vy = Vx != 0 ? random.Next(1, 3) : random.Next(1, 3);
 
             int mass = 3;
             int radius = 25;
 
-            return BallAPI.CreateAPI(x, y, Vx, Vy, radius, mass, this);
+            return BallAPI.CreateAPI(position, Vx, Vy, radius, mass, this);
         }
     }
 }

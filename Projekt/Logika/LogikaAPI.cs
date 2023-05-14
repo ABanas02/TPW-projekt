@@ -1,4 +1,6 @@
 using Dane;
+using System.ComponentModel;
+using System.Numerics;
 using System.Timers;
 
 namespace Logika.API
@@ -18,16 +20,13 @@ namespace Logika.API
         }
         public List<BallAPI> balls;
         public Random random;
-        public abstract void CheckCollisionsBetweenBalls();
-        public abstract void CheckCollisionWithBoard();
         public abstract void CreateBall();
-        public abstract void StartMovingBalls();
-        public abstract void MoveBalls();
     }
 
     internal class BallAPIBase : LogikaAPI
     {
         private DaneAPI _daneAPI;
+        private static readonly ReaderWriterLockSlim readerWriterLockSlim = new ReaderWriterLockSlim();
         public BallAPIBase(DaneAPI daneAPI)
         {
             _daneAPI = daneAPI;
@@ -38,84 +37,87 @@ namespace Logika.API
         {
             balls.Add(_daneAPI.Boundary.CreateBall());
             var ball = balls[balls.Count - 1];
-            if (balls.Count == 1)
+            ball.subscribeToPropertyChanged(CheckCollisions);
+        }
+
+        private bool CheckCollisionsBetweenBalls(BallAPI ball1, BallAPI ball2)
+        {
+            Vector2 position1 = ball1.Position;
+            Vector2 position2 = ball2.Position;
+            int distance = (int)Math.Sqrt(Math.Pow((position1.X + ball1.Vx) - (position2.X + ball2.Vx), 2) + Math.Pow((position1.Y + ball1.Vx) - (position2.Y + ball2.Vy), 2));
+            if (distance <= ball1.Radius / 2 + ball2.Radius / 2)
             {
-                StartMovingBalls();
+                readerWriterLockSlim.EnterWriteLock();
+                try
+                {
+                    int v1x = ball1.Vx;
+                    int v1y = ball1.Vy;
+                    int v2x = ball2.Vx;
+                    int v2y = ball2.Vy;
+
+                    int newV1X = (v1x * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2x) / (ball1.Mass + ball2.Mass);
+                    int newV1Y = (v1y * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2y) / (ball1.Mass + ball2.Mass);
+                    int newV2X = (v2x * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1x) / (ball1.Mass + ball2.Mass);
+                    int newV2Y = (v2y * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1y) / (ball1.Mass + ball2.Mass);
+                    ball1.Vx = (v1x * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2x) / (ball1.Mass + ball2.Mass);
+                    ball1.Vy = (v1y * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2y) / (ball1.Mass + ball2.Mass);
+                    ball2.Vx = (v2x * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1x) / (ball1.Mass + ball2.Mass);
+                    ball2.Vy = (v2y * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1y) / (ball1.Mass + ball2.Mass);
+                }
+                finally
+                {
+                    readerWriterLockSlim.ExitWriteLock();
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private void CheckCollisionWithBoard(BallAPI ball)
+        {
+            readerWriterLockSlim.EnterWriteLock();
+            try
+            {
+                Vector2 position = ball.Position;
+                if (position.X - ball.Radius < 0)
+                {
+                    ball.Vx = Math.Abs(ball.Vx);
+                    position.X = ball.Radius;
+                }
+                else if (position.X + ball.Radius > _daneAPI.Boundary.Width)
+                {
+                    ball.Vx = -Math.Abs(ball.Vx);
+                    position.X = _daneAPI.Boundary.Width - ball.Radius;
+                }
+
+                if (position.Y - ball.Radius < 0)
+                {
+                    ball.Vy = Math.Abs(ball.Vy);
+                    position.Y = ball.Radius;
+                }
+                else if (position.Y + ball.Radius > _daneAPI.Boundary.Height)
+                {
+                    ball.Vy = -Math.Abs(ball.Vy);
+                    position.Y = _daneAPI.Boundary.Height - ball.Radius;
+                }
+            }
+            finally
+            {
+                readerWriterLockSlim.ExitWriteLock();
             }
         }
-        public override void StartMovingBalls()
+        private void CheckCollisions(object sender, PropertyChangedEventArgs e)
         {
-            Task.Run(() =>
+            BallAPI ball = (BallAPI)sender;
+            if (ball != null)
             {
-                while (true)
-                {
-                    MoveBalls();
-                    CheckCollisionWithBoard();
-                    CheckCollisionsBetweenBalls();
+                CheckCollisionWithBoard(ball);
 
-                    Thread.Sleep(1000 / 60);
-                }
-            });
-        }
-        public override void MoveBalls()
-        {
-            foreach (var ball in balls)
-            {
-                ball.X += ball.Vx;
-                ball.Y += ball.Vy;
-            }
-        }
-        public override void CheckCollisionWithBoard()
-        {
-            foreach (var ball in balls)
-            {
-                if (ball.X - ball.Radius < 0)
+                foreach (var ball2 in balls)
                 {
-                    ball.Vx = Math.Abs(ball.Vx); // Make sure the ball moves to the right
-                    ball.X = ball.Radius; // Make sure the ball is within the board
-                }
-                else if (ball.X + ball.Radius > _daneAPI.Boundary.Width)
-                {
-                    ball.Vx = -Math.Abs(ball.Vx); // Make sure the ball moves to the left
-                    ball.X = _daneAPI.Boundary.Width - ball.Radius; // Make sure the ball is within the board
-                }
-
-                if (ball.Y - ball.Radius < 0)
-                {
-                    ball.Vy = Math.Abs(ball.Vy); // Make sure the ball moves downwards
-                    ball.Y = ball.Radius; // Make sure the ball is within the board
-                }
-                else if (ball.Y + ball.Radius > _daneAPI.Boundary.Height)
-                {
-                    ball.Vy = -Math.Abs(ball.Vy); // Make sure the ball moves upwards
-                    ball.Y = _daneAPI.Boundary.Height - ball.Radius; // Make sure the ball is within the board
-                }
-            }
-        }
-
-        public override void CheckCollisionsBetweenBalls()
-        {
-            for (int i = 0; i < balls.Count; i++)
-            {
-                for (int j = i + 1; j < balls.Count; j++)
-                {
-                    BallAPI ball1 = balls[i];
-                    BallAPI ball2 = balls[j];
-
-                    int distance = (int)Math.Sqrt(Math.Pow(ball1.X - ball2.X, 2) + Math.Pow(ball1.Y - ball2.Y, 2));
-
-                    if (distance <= ball1.Radius / 2 + ball2.Radius / 2)
+                    if (!ball2.Equals(ball))
                     {
-                        // collision detected
-                        int v1x = ball1.Vx;
-                        int v1y = ball1.Vy;
-                        int v2x = ball2.Vx;
-                        int v2y = ball2.Vy;
-
-                        ball1.Vx = (v1x * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2x) / (ball1.Mass + ball2.Mass);
-                        ball1.Vy = (v1y * (ball1.Mass - ball2.Mass) + 2 * ball2.Mass * v2y) / (ball1.Mass + ball2.Mass);
-                        ball2.Vx = (v2x * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1x) / (ball1.Mass + ball2.Mass);
-                        ball2.Vy = (v2y * (ball2.Mass - ball1.Mass) + 2 * ball1.Mass * v1y) / (ball1.Mass + ball2.Mass);
+                        CheckCollisionsBetweenBalls(ball, ball2);
                     }
                 }
             }
