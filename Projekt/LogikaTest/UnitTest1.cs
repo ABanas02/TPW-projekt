@@ -1,99 +1,44 @@
-//using Dane;
-//using Logika;
-//using Logika.API;
+using Dane;
+using Logika;
+using Logika.API;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
+using System.Numerics;
 
-//namespace LogikaTest
-//{
-//    [TestClass]
-//    public class APITest
-//    {
-//        public class TestDane : DaneAPI
-//        {
-//            public TestDane() { }
-//        }
+namespace LogikaTest
+{
+    [TestClass]
+    public class APITest
+    {
+        public class TestDane : DaneAPI
+        {
+            public TestDane(int width, int height) : base()
+            {
+                Boundary = new Boundary(width, height);
+            }
+        }
 
-//        private LogikaAPI logika = LogikaAPI.CreateApi(new TestDane());
+        private LogikaAPI logika;
 
-//        [TestMethod]
-//        public void TestCreateBall()
-//        {
-//            LogikaAPI logika = LogikaAPI.CreateApi();
-//            logika.CreateBall();
-//            Assert.AreEqual(logika.balls.Count, 1);
+        [TestInitialize]
+        public void Setup()
+        {
+            logika = LogikaAPI.CreateApi(new TestDane(390, 190));
+        }
 
-//            BallAPI createdBall = logika.balls[0];
+        [TestMethod]
+        public void TestCreateBall()
+        {
+            logika.CreateBall();
+            Assert.AreEqual(1, logika.balls.Count);
 
+            BallAPI createdBall = logika.balls[0];
 
-//            Assert.IsTrue(createdBall.X >= 0 && createdBall.X < 1000);
-//            Assert.IsTrue(createdBall.Y >= 0 && createdBall.Y < 1500);
-//            Assert.IsTrue(createdBall.Vx >= -2 && createdBall.Vx <= 2);
-//            Assert.IsTrue(createdBall.Vy >= -2 && createdBall.Vy <= 2);
-//            Assert.AreEqual(5, createdBall.Radius);
-//        }
-
-
-//        [TestMethod]
-//        public void TestBallMoveAndBallOutOfBounds()
-//        {
-//            // Przygotowanie
-//            int boardWidth = 1000;
-//            int boardHeight = 1500;
-
-//            BallAPI ball = BallAPI.CreateAPI(0, 0, 5, 5, 5);
-
-//            logika.balls.Add(ball);
-
-//            ball.Move();
-//            //Sprawdzenie czy kulka siê ruszy³a
-//            Assert.IsTrue(ball.X == 5 && ball.Y == 5);
-
-
-//            //Zdzerzenie z górn¹ œcian¹
-//            ball.X = 0;
-//            ball.Y = 0;
-//            ball.Vx = 5;
-//            ball.Vy = 5;
-//            ball.Move();
-//            ball.Y = boardHeight + ball.Radius;
-
-
-//            ball.CheckCollisionWithBoard(boardWidth, boardHeight);
-
-//            Assert.IsTrue(ball.Vx == 5 && ball.Vy == -5);
-
-//            //Zderzenie z doln¹ œcian¹
-//            ball.X = 0;
-//            ball.Y = 0;
-//            ball.Vx = 5;
-//            ball.Vy = -5;
-//            ball.Move();
-//            ball.Y = 4;
-//            ball.CheckCollisionWithBoard(boardWidth, boardHeight);
-
-//            Assert.IsTrue(ball.Vx == 5 && ball.Vy == 5);
-
-//            //Zderzenie w praw¹ œcian¹
-//            ball.X = 0;
-//            ball.Y = 0;
-//            ball.Vx = 5;
-//            ball.Vy = 5;
-//            ball.Move();
-//            ball.X = boardWidth + ball.Radius;
-//            ball.CheckCollisionWithBoard(boardWidth, boardHeight);
-
-//            Assert.IsTrue(ball.Vx == -5 && ball.Vy == 5);
-
-//            //Zderzenie z lew¹ œcian¹
-//            ball.X = 0;
-//            ball.Y = 0;
-//            ball.Vx = -5;
-//            ball.Vy = 5;
-//            ball.Move();
-//            ball.X = 4;
-//            ball.CheckCollisionWithBoard(boardWidth, boardHeight);
-
-//            Assert.IsTrue(ball.Vx == 5 && ball.Vy == 5);
-//        }
-
-//    }
-//}
+            Assert.IsTrue(createdBall.Position.X >= 0 && createdBall.Position.X <= 390);
+            Assert.IsTrue(createdBall.Position.Y >= 0 && createdBall.Position.Y <= 190);
+            Assert.IsTrue(createdBall.Vx >= 1 && createdBall.Vx <= 3);
+            Assert.IsTrue(createdBall.Vy >= 1 && createdBall.Vy <= 3);
+            Assert.AreEqual(25, createdBall.Radius);
+        }
+    }
+}

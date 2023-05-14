@@ -1,10 +1,9 @@
-﻿using System.ComponentModel;
-using System.Numerics;
-using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Threading.Tasks;
 
 namespace Dane
 {
-    public abstract class BallAPI
+    public abstract class BallAPI : INotifyBallPositionChanged
     {
         public static BallAPI CreateAPI(Vector2 position, int Vx, int Vy, int radius, int mass, Boundary boundary)
         {
@@ -19,9 +18,9 @@ namespace Dane
         public abstract int Radius { get; set; }
         public abstract int Diameter { get; }
         public Boundary Boundary { get; private set; }
-        public abstract void subscribeToPropertyChanged(PropertyChangedEventHandler handler);
+        public event BallPositionChangedEventHandler BallPositionChanged;
 
-        internal class BallBase : BallAPI, INotifyPropertyChanged
+        internal class BallBase : BallAPI
         {
             private Vector2 _position;
             private int _Vx;
@@ -39,6 +38,7 @@ namespace Dane
                 this.Boundary = boundary;
                 Task.Run(() => Move());
             }
+
             private async Task Move()
             {
                 while (true)
@@ -52,6 +52,7 @@ namespace Dane
                     await Task.Delay(TimeSpan.FromMilliseconds(2 * velocity));
                 }
             }
+
             public override Vector2 Position
             {
                 get { return _position; }
@@ -61,38 +62,29 @@ namespace Dane
             {
                 _position.X = newPosition.X;
                 _position.Y = newPosition.Y;
-                OnPropertyChanged(nameof(Position.X));
-                OnPropertyChanged(nameof(Position.Y));
+                BallPositionChanged?.Invoke(this, new BallEvents(newPosition));
             }
+
             public override int X { get { return (int)_position.X; } }
             public override int Y { get { return (int)_position.Y; } }
-
             public override int Vx
             {
                 get { return _Vx; }
-                set
-                {
-                    _Vx = value;
-                }
+                set { _Vx = value; }
             }
 
             public override int Vy
             {
                 get { return _Vy; }
-                set
-                {
-                    _Vy = value;
-                }
+                set { _Vy = value; }
             }
 
             public override int Radius
             {
                 get { return _radius; }
-                set
-                {
-                    _radius = value;
-                }
+                set { _radius = value; }
             }
+
             public override int Diameter
             {
                 get { return Radius * 2; }
@@ -101,23 +93,8 @@ namespace Dane
             public override int Mass
             {
                 get { return _mass; }
-                set
-                {
-                    _mass = value;
-                }
+                set { _mass = value; }
             }
-
-            public event PropertyChangedEventHandler PropertyChanged;
-            public override void subscribeToPropertyChanged(PropertyChangedEventHandler handler)
-            {
-                PropertyChanged += handler;
-            }
-
-            protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
-
         }
     }
 }

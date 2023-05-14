@@ -8,7 +8,6 @@ namespace ViewModel
 {
     public abstract class ViewModelAPI : INotifyPropertyChanged
     {
-        //protected ModelAPI _model;
         private ObservableCollection<object> _objects;
 
         public static ViewModelAPI CreateViewModelAPI()
@@ -36,15 +35,11 @@ namespace ViewModel
 
         internal class ViewModelAPIBase : ViewModelAPI
         {
-            public ICommand StartCommand { get; }
-            public ICommand StopCommand { get; }
             public ICommand CreateBallCommand { get; }
             private ModelAPI _model;
             public ViewModelAPIBase()
             {
                 _model = ModelAPI.CreateApi(null);
-                //StartCommand = new RelayCommand(Start);
-                //StopCommand = new RelayCommand(Stop);
                 CreateBallCommand = new RelayCommand(CreateBall);
                 Objects = GetObjects();
             }
@@ -52,12 +47,18 @@ namespace ViewModel
             public override void CreateBall()
             {
                 _model.CreateBall();
+                var ball = _model.GetBalls().Last();
+                ball.BallPositionChanged += BallPositionChangedHandler;
                 Objects = GetObjects();
             }
 
             public override ObservableCollection<object> GetObjects()
             {
                 return _model.GetObjects();
+            }
+            private void BallPositionChangedHandler(object sender, BallEvents e)
+            {
+                Objects = GetObjects();
             }
         }
     }

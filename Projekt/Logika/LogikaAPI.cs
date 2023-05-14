@@ -37,7 +37,7 @@ namespace Logika.API
         {
             balls.Add(_daneAPI.Boundary.CreateBall());
             var ball = balls[balls.Count - 1];
-            ball.subscribeToPropertyChanged(CheckCollisions);
+            ball.BallPositionChanged += CheckCollisions;
         }
 
         private bool CheckCollisionsBetweenBalls(BallAPI ball1, BallAPI ball2)
@@ -106,7 +106,7 @@ namespace Logika.API
                 readerWriterLockSlim.ExitWriteLock();
             }
         }
-        private void CheckCollisions(object sender, PropertyChangedEventArgs e)
+        private void CheckCollisions(object sender, BallEvents e)
         {
             BallAPI ball = (BallAPI)sender;
             if (ball != null)
