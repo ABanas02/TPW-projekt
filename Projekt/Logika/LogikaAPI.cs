@@ -1,4 +1,5 @@
 using Dane;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Numerics;
 using System.Timers;
@@ -21,17 +22,21 @@ namespace Logika.API
         public List<BallAPI> balls;
         public Random random;
         public abstract void CreateBall();
+        public abstract void Start();
+        public abstract void Stop();
     }
 
     internal class BallAPIBase : LogikaAPI
     {
         private DaneAPI _daneAPI;
         private static readonly ReaderWriterLockSlim readerWriterLockSlim = new ReaderWriterLockSlim();
+        private BallLogger logger;
         public BallAPIBase(DaneAPI daneAPI)
         {
             _daneAPI = daneAPI;
             balls = new List<BallAPI>();
             random = new Random();
+            logger = new BallLogger();
         }
         public override void CreateBall()
         {
@@ -122,5 +127,14 @@ namespace Logika.API
                 }
             }
         }
+        public override void Start()
+        {
+            logger.StartLogging(BallAPI.LogQueue);
+        }
+
+        public override void Stop()
+        {
+            logger.StopLogging();
+        }
     }
-}
+    }

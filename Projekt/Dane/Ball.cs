@@ -1,5 +1,10 @@
-﻿using System.Numerics;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Numerics;
+using System.Text.Json;
+using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace Dane
 {
@@ -19,6 +24,7 @@ namespace Dane
         public abstract int Diameter { get; }
         public Boundary Boundary { get; private set; }
         public event BallPositionChangedEventHandler BallPositionChanged;
+        public static ConcurrentQueue<BallAPI> LogQueue = new ConcurrentQueue<BallAPI>();
 
         internal class BallBase : BallAPI
         {
@@ -47,6 +53,7 @@ namespace Dane
                     int newY = (int)_position.Y + _Vy;
                     Vector2 newPosition = new Vector2(newX, newY);
                     setPosition(newPosition);
+                    LogQueue.Enqueue(this);
 
                     double velocity = Math.Sqrt(_Vx * _Vx + _Vy * _Vy);
                     await Task.Delay(TimeSpan.FromMilliseconds(2 * velocity));

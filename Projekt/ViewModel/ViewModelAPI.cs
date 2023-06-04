@@ -32,15 +32,21 @@ namespace ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        public abstract void Start();
+        public abstract void Stop();
 
         internal class ViewModelAPIBase : ViewModelAPI
         {
             public ICommand CreateBallCommand { get; }
+            public ICommand StartCommand { get; }
+            public ICommand StopCommand { get; }
             private ModelAPI _model;
             public ViewModelAPIBase()
             {
                 _model = ModelAPI.CreateApi(null);
                 CreateBallCommand = new RelayCommand(CreateBall);
+                StartCommand = new RelayCommand(Start);
+                StopCommand = new RelayCommand(Stop);
                 Objects = GetObjects();
             }
 
@@ -59,6 +65,15 @@ namespace ViewModel
             private void BallPositionChangedHandler(object sender, BallEvents e)
             {
                 Objects = GetObjects();
+            }
+            public override void Start()
+            {
+                _model.Start();
+            }
+
+            public override void Stop()
+            {
+                _model.Stop();
             }
         }
     }

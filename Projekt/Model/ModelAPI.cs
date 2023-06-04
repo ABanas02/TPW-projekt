@@ -22,7 +22,8 @@ namespace Model
         }
         public abstract List<BallAPI> GetBalls();
         public abstract void CreateBall();
-
+        public abstract void Start();
+        public abstract void Stop();
         public abstract ObservableCollection<object> GetObjects();
 
         internal class ModelAPIBase : ModelAPI
@@ -48,6 +49,15 @@ namespace Model
                 foreach (var ball in _logikaAPI.balls)
                     objects.Add(ball);
                 return objects;
+            }
+            public override void Start()
+            {
+                _logikaAPI.Start();
+            }
+
+            public override void Stop()
+            {
+                _logikaAPI.Stop();
             }
         }
     }
