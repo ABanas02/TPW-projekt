@@ -12,7 +12,7 @@ namespace Model
         {
             if (logikaAPI == null)
             {
-                return new ModelAPIBase(LogikaAPI.CreateApi(null));
+                return new ModelAPIBase(LogikaAPI.CreateApi(null, null));
             }
             else
             {
@@ -32,7 +32,7 @@ namespace Model
             
             public ModelAPIBase(LogikaAPI logikaAPI)
             {
-                _logikaAPI = LogikaAPI.CreateApi(null);
+                _logikaAPI = LogikaAPI.CreateApi(null, null);
             }
             public override List<BallAPI> GetBalls()
             {

@@ -23,7 +23,7 @@ namespace LogikaTest
         [TestInitialize]
         public void Setup()
         {
-            logika = LogikaAPI.CreateApi(new TestDane(390, 190));
+            logika = LogikaAPI.CreateApi(new TestDane(390, 190), null);
         }
 
         [TestMethod]

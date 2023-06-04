@@ -8,45 +8,55 @@ using System.Threading.Tasks;
 
 namespace Dane
 {
-    public class BallLogger
+    public abstract class LoggerAPI
     {
-        private bool run;
-        private object fileLock = new object();
-        private Stopwatch stopwatch = new Stopwatch();
-
-        public BallLogger()
+        public static LoggerAPI CreateApi()
         {
+            return new LoggerAPIBase();
         }
+        public abstract Task StartLogging(ConcurrentQueue<BallAPI> queue);
+        public abstract void StopLogging();
 
-        public async Task StartLogging(ConcurrentQueue<BallAPI> queue)
+        internal class LoggerAPIBase : LoggerAPI
         {
-            run = true;
-            await Log(queue);
-        }
-        public void StopLogging()
-        {
-            run = false;
-        }
+            private bool run;
+            private object fileLock = new object();
+            private Stopwatch stopwatch = new Stopwatch();
 
-        private async Task Log(ConcurrentQueue<BallAPI> queue)
-        {
-            while (run)
+            public LoggerAPIBase()
             {
-                stopwatch.Restart();
-                if (queue.TryDequeue(out BallAPI ball))
-                {
-                    string log = "{" + String.Format("\n\t\"Date\": \"{0}\",\n\t\"Info\":{1}\n", DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), JsonSerializer.Serialize(ball)) + "}";
+            }
 
-                    lock (fileLock)
+            public override async Task StartLogging(ConcurrentQueue<BallAPI> queue)
+            {
+                run = true;
+                await Log(queue);
+            }
+            public override void StopLogging()
+            {
+                run = false;
+            }
+
+            private async Task Log(ConcurrentQueue<BallAPI> queue)
+            {
+                while (run)
+                {
+                    stopwatch.Restart();
+                    if (queue.TryDequeue(out BallAPI ball))
                     {
-                        using (var writer = new StreamWriter("C:\\Users\\adamb\\Desktop\\plik\\Log.json", true, Encoding.UTF8))
+                        string log = "{" + String.Format("\n\t\"Date\": \"{0}\",\n\t\"Info\":{1}\n", DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), JsonSerializer.Serialize(ball)) + "}";
+
+                        lock (fileLock)
                         {
-                            writer.WriteLine(log);
+                            using (var writer = new StreamWriter("log.json", true, Encoding.UTF8))
+                            {
+                                writer.WriteLine(log);
+                            }
                         }
                     }
+                    stopwatch.Stop();
+                    await Task.Delay((int)stopwatch.ElapsedMilliseconds + 100);
                 }
-                stopwatch.Stop();
-                await Task.Delay(Math.Max((int)stopwatch.ElapsedMilliseconds, 100));
             }
         }
     }

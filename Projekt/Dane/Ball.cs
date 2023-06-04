@@ -33,6 +33,8 @@ namespace Dane
             private int _Vy;
             private int _radius;
             private int _mass;
+            private static readonly ReaderWriterLockSlim velocityLock = new ReaderWriterLockSlim();
+            private static readonly ReaderWriterLockSlim positionLock = new ReaderWriterLockSlim();
 
             public BallBase(Vector2 position, int _Vx, int _Vy, int _radius, int _mass, Boundary boundary)
             {
@@ -62,28 +64,91 @@ namespace Dane
 
             public override Vector2 Position
             {
-                get { return _position; }
+                get
+                {
+                    positionLock.EnterReadLock();
+                    try
+                    {
+                        return _position;
+                    }
+                    finally { positionLock.ExitReadLock(); }
+
+                }
             }
 
             private void setPosition(Vector2 newPosition)
             {
-                _position.X = newPosition.X;
-                _position.Y = newPosition.Y;
+                positionLock.EnterWriteLock();
+                try
+                {
+                    _position.X = newPosition.X;
+                    _position.Y = newPosition.Y;
+                }
+                finally
+                {
+                    positionLock.ExitWriteLock();
+                }
                 BallPositionChanged?.Invoke(this, new BallEvents(newPosition));
             }
 
+
             public override int X { get { return (int)_position.X; } }
             public override int Y { get { return (int)_position.Y; } }
+
             public override int Vx
             {
-                get { return _Vx; }
-                set { _Vx = value; }
+                get
+                {
+                    velocityLock.EnterReadLock();
+                    try
+                    {
+                        return _Vx;
+                    }
+                    finally
+                    {
+                        velocityLock.ExitReadLock();
+                    }
+                }
+                set
+                {
+                    velocityLock.EnterWriteLock();
+                    try
+                    {
+                        _Vx = value;
+                    }
+                    finally
+                    {
+                        velocityLock.ExitWriteLock();
+                    }
+                }
             }
 
             public override int Vy
             {
-                get { return _Vy; }
-                set { _Vy = value; }
+                get
+                {
+                    velocityLock.EnterReadLock();
+                    try
+                    {
+                        return _Vy;
+                    }
+                    finally
+                    {
+                        velocityLock.ExitReadLock();
+                    }
+                }
+                set
+                {
+                    velocityLock.EnterWriteLock();
+                    try
+                    {
+                        _Vy = value;
+                    }
+                    finally
+                    {
+                        velocityLock.ExitWriteLock();
+                    }
+                }
             }
 
             public override int Radius

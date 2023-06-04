@@ -8,15 +8,15 @@ namespace Logika.API
 {
     public abstract class LogikaAPI
     {
-        public static LogikaAPI CreateApi(DaneAPI daneAPI)
+        public static LogikaAPI CreateApi(DaneAPI daneAPI, LoggerAPI loggerAPI)
         {
             if (daneAPI == null)
             {
-                return new BallAPIBase(DaneAPI.CreateApi(390, 190));
+                return new BallAPIBase(DaneAPI.CreateApi(390, 190), LoggerAPI.CreateApi());
             }
             else
             {
-                return new BallAPIBase(daneAPI);
+                return new BallAPIBase(daneAPI, loggerAPI);
             }
         }
         public List<BallAPI> balls;
@@ -30,13 +30,13 @@ namespace Logika.API
     {
         private DaneAPI _daneAPI;
         private static readonly ReaderWriterLockSlim readerWriterLockSlim = new ReaderWriterLockSlim();
-        private BallLogger logger;
-        public BallAPIBase(DaneAPI daneAPI)
+        private LoggerAPI _logger;
+        public BallAPIBase(DaneAPI daneAPI, LoggerAPI logger)
         {
             _daneAPI = daneAPI;
             balls = new List<BallAPI>();
             random = new Random();
-            logger = new BallLogger();
+            _logger = logger;
         }
         public override void CreateBall()
         {
@@ -129,12 +129,12 @@ namespace Logika.API
         }
         public override void Start()
         {
-            logger.StartLogging(BallAPI.LogQueue);
+            _logger.StartLogging(BallAPI.LogQueue);
         }
 
         public override void Stop()
         {
-            logger.StopLogging();
+            _logger.StopLogging();
         }
     }
     }
